@@ -57,16 +57,17 @@ def seed_db():
 
     # 2. Create Default Services
     services_to_add = [
-        {"name": "Income Certificate", "description": "Apply for an official Income Certificate.", "required_documents": "Aadhar Card, Salary Slip, Ration Card", "fee": 50.0},
-        {"name": "Birth Certificate", "description": "Register for a Birth Certificate.", "required_documents": "Hospital Summary, Parents Aadhar Card", "fee": 100.0},
-        {"name": "Caste Certificate", "description": "Apply for a Caste Certificate.", "required_documents": "Residence Proof, Aadhar Card, School TC", "fee": 25.0},
-        {"name": "Domicile Certificate", "description": "Apply for Residence Proof.", "required_documents": "Voter ID, Electricity Bill, Age Proof", "fee": 150.0}
+        {"name": "Income Certificate", "category": "Legal & Personal", "description": "Apply for an official Income Certificate.", "required_documents": "Aadhar Card, Salary Slip, Ration Card", "fee": 50.0},
+        {"name": "Birth Certificate", "category": "Identity & Vital Records", "description": "Register for a Birth Certificate.", "required_documents": "Hospital Summary, Parents Aadhar Card", "fee": 100.0},
+        {"name": "Caste Certificate", "category": "Identity & Vital Records", "description": "Apply for a Caste Certificate.", "required_documents": "Residence Proof, Aadhar Card, School TC", "fee": 25.0},
+        {"name": "Domicile Certificate", "category": "Legal & Personal", "description": "Apply for Residence Proof.", "required_documents": "Voter ID, Electricity Bill, Age Proof", "fee": 150.0}
     ]
 
     for s in services_to_add:
         if not Service.query.filter_by(name=s["name"]).first():
             new_service = Service(
                 name=s["name"],
+                category=s["category"],
                 description=s["description"],
                 required_documents=s["required_documents"],
                 fee=s["fee"]

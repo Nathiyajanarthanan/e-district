@@ -1,4 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import ServiceList from '../components/ServiceList';
@@ -28,8 +30,15 @@ const UserDashboard: React.FC = () => {
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState<string>('All Services');
+  const { isAdmin } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
+    if (isAdmin) {
+      navigate('/admin');
+      return;
+    }
+
     const fetchDashboardData = async () => {
       try {
         const [servicesRes, appsRes] = await Promise.all([
