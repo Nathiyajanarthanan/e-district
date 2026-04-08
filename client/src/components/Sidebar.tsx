@@ -1,5 +1,15 @@
-import React from 'react';
-import { Layers } from 'lucide-react';
+import React, { useState } from 'react';
+import { 
+  UserCheck, 
+  Users, 
+  Heart, 
+  Info, 
+  Landmark, 
+  FileSpreadsheet, 
+  ChevronLeft, 
+  ChevronRight,
+  LayoutGrid
+} from 'lucide-react';
 
 interface SidebarProps {
   categories: string[];
@@ -8,41 +18,56 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ categories, activeCategory, onSelectCategory }) => {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const getIcon = (category: string) => {
+    switch (category) {
+      case 'All Services': return <LayoutGrid className="sidebar-item-icon" size={20} />;
+      case 'Personal & Identity Certificates': return <UserCheck className="sidebar-item-icon" size={20} />;
+      case 'Family & Relationship Certificates': return <Users className="sidebar-item-icon" size={20} />;
+      case 'Social Welfare Certificates': return <Heart className="sidebar-item-icon" size={20} />;
+      case 'Special Case Certificates': return <Info className="sidebar-item-icon" size={20} />;
+      case 'Property & Financial Certificates': return <Landmark className="sidebar-item-icon" size={20} />;
+      case 'Vital Records': return <FileSpreadsheet className="sidebar-item-icon" size={20} />;
+      default: return <FileSpreadsheet className="sidebar-item-icon" size={20} />;
+    }
+  };
+
   return (
-    <div style={{ width: '280px', borderRight: '1px solid var(--border-color)', height: '100%', minHeight: 'calc(100vh - 80px)', backgroundColor: '#fff', padding: '1.5rem' }}>
-      <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem', color: 'var(--text-dark)', fontSize: '1.2rem' }}>
-        <Layers size={20} color="var(--primary-color)" /> Categories
-      </h3>
-      <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-        {['All Services', ...categories].map(category => (
-          <li key={category}>
-            <button
-              onClick={() => onSelectCategory(category)}
-              style={{
-                width: '100%',
-                textAlign: 'left',
-                padding: '0.75rem 1rem',
-                border: 'none',
-                backgroundColor: activeCategory === category ? 'var(--primary-light)' : 'transparent',
-                color: activeCategory === category ? 'var(--primary-color)' : 'var(--text-dark)',
-                fontWeight: activeCategory === category ? 600 : 400,
-                borderRadius: 'var(--radius-md)',
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-              }}
-              onMouseOver={(e) => {
-                if (activeCategory !== category) e.currentTarget.style.backgroundColor = '#f1f5f9';
-              }}
-              onMouseOut={(e) => {
-                if (activeCategory !== category) e.currentTarget.style.backgroundColor = 'transparent';
-              }}
-            >
-              {category}
-            </button>
-          </li>
+    <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
+      <div className="sidebar-header">
+        {!isCollapsed && <span style={{ fontWeight: 700, fontSize: '0.85rem', textTransform: 'uppercase', color: 'var(--text-light)', letterSpacing: '0.05em' }}>Navigation</span>}
+        <button 
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '4px', borderRadius: '4px' }}
+        >
+          {isCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
+        </button>
+      </div>
+      
+      <div className="sidebar-content">
+        <button
+          onClick={() => onSelectCategory('All Services')}
+          className={`sidebar-item ${activeCategory === 'All Services' ? 'active' : ''}`}
+          title="All Services"
+        >
+          {getIcon('All Services')}
+          {!isCollapsed && <span className="sidebar-item-text">All Services</span>}
+        </button>
+
+        {categories.map(category => (
+          <button
+            key={category}
+            onClick={() => onSelectCategory(category)}
+            className={`sidebar-item ${activeCategory === category ? 'active' : ''}`}
+            title={category}
+          >
+            {getIcon(category)}
+            {!isCollapsed && <span className="sidebar-item-text">{category}</span>}
+          </button>
         ))}
-      </ul>
-    </div>
+      </div>
+    </aside>
   );
 };
 

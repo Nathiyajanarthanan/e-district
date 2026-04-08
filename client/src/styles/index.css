@@ -208,45 +208,181 @@ h1, h2, h3, h4 {
   color: #991b1b;
 }
 
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+/* DashBoard Layout */
+.dashboard-container {
+  display: flex;
+  min-height: calc(100vh - 64px);
+  background-color: var(--bg-color);
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.4s ease-out forwards;
+.sidebar {
+  width: 280px;
+  background: white;
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  transition: width var(--transition-slow);
+  position: sticky;
+  top: 64px;
+  height: calc(100vh - 64px);
+  z-index: 40;
+  overflow-y: auto;
 }
 
-/* Table */
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
+.sidebar.collapsed {
+  width: 80px;
 }
 
-.data-table th, .data-table td {
-  padding: 1rem;
-  text-align: left;
+.sidebar-header {
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   border-bottom: 1px solid var(--border-color);
 }
 
-.data-table th {
-  background-color: var(--secondary-color);
-  font-weight: 600;
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+.sidebar-content {
+  padding: 1rem;
+  flex: 1;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-md);
   color: var(--text-light);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  margin-bottom: 0.25rem;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  font-weight: 500;
+  font-size: 0.9rem;
 }
 
-.data-table tr:last-child td {
-  border-bottom: none;
+.sidebar-item:hover {
+  background-color: #f1f5f9;
+  color: var(--primary-color);
 }
 
-.data-table tr {
-  transition: background-color var(--transition-fast);
+.sidebar-item.active {
+  background-color: #eff6ff;
+  color: var(--primary-color);
 }
 
-.data-table tr:hover {
-  background-color: var(--secondary-color);
+.sidebar-item-icon {
+  flex-shrink: 0;
+}
+
+.sidebar-item-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.main-content-area {
+  flex: 1;
+  padding: 2rem 3rem;
+  overflow-y: auto;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Service Cards Enhancement */
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.service-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  transition: all var(--transition-slow);
+  position: relative;
+  overflow: hidden;
+}
+
+.service-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 0;
+  background-color: var(--primary-color);
+  transition: height var(--transition-slow);
+}
+
+.service-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border-color: transparent;
+}
+
+.service-card:hover::before {
+  height: 100%;
+}
+
+.service-card-category {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--primary-color);
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+}
+
+.service-card-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 1rem;
+  line-height: 1.3;
+}
+
+.service-card-desc {
+  color: var(--text-light);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  flex: 1;
+}
+
+.service-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1.5rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.service-fee {
+  font-weight: 700;
+  color: var(--text-dark);
+  font-size: 1.1rem;
+}
+
+@media (max-width: 1024px) {
+  .sidebar {
+    position: fixed;
+    left: -280px;
+    height: 100vh;
+    top: 0;
+  }
+  .sidebar.open {
+    left: 0;
+  }
+  .main-content-area {
+    padding: 1.5rem;
+  }
 }

@@ -79,65 +79,108 @@ const UserDashboard: React.FC = () => {
   return (
     <div className="animate-fade-in" style={{ backgroundColor: 'var(--bg-color)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Navbar />
-      <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+      <div className="dashboard-container">
         <Sidebar 
           categories={categories} 
           activeCategory={activeCategory} 
           onSelectCategory={setActiveCategory} 
         />
         
-        <div style={{ flex: 1, padding: '2rem', overflowY: 'auto' }}>
-          <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem', fontSize: '1.5rem', color: 'var(--text-dark)' }}>
-            <Activity color="var(--primary-color)" /> My Dashboard
-          </h2>
+        <main className="main-content-area">
+          <div style={{ marginBottom: '2.5rem' }}>
+            <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem', fontSize: '1.75rem', color: 'var(--text-dark)' }}>
+              Welcome back, User
+            </h2>
+            <p style={{ color: 'var(--text-light)', fontSize: '1rem' }}>
+              Access and manage your district services easily.
+            </p>
+          </div>
 
-          {/* Recent Applications Card */}
-          <div className="card" style={{ marginBottom: '2rem', maxWidth: '1000px' }}>
-            <h3 style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem', marginBottom: '1rem' }}>
-              My Applications
-            </h3>
-            {applications.length === 0 ? (
-               <p style={{ color: 'var(--text-light)' }}>You have no applications yet.</p>
-            ) : (
-              <div style={{ overflowX: 'auto' }}>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Service</th>
-                      <th>Submitted On</th>
-                      <th>Documents</th>
-                      <th>Status</th>
-                      <th>Admin Remarks</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {applications.map(app => (
-                      <tr key={app.id}>
-                        <td style={{ fontWeight: 500 }}>{app.service_name}</td>
-                        <td>{new Date(app.created_at).toLocaleDateString()}</td>
-                        <td><FileText size={16} style={{ verticalAlign: 'middle', marginRight: '4px' }}/> {app.documents_count} Files</td>
-                        <td>{getStatusBadge(app.status)}</td>
-                        <td style={{ fontStyle: 'italic', color: 'var(--text-light)' }}>{app.remarks || '-'}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+          {/* Stats/Quick Info (Optional but good for professional look) */}
+          <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '3rem', flexWrap: 'wrap' }}>
+            <div className="card" style={{ flex: 1, minWidth: '200px', padding: '1.25rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <div style={{ padding: '0.75rem', borderRadius: '50%', backgroundColor: '#eff6ff', color: 'var(--primary-color)' }}>
+                <Clock size={24} />
               </div>
-            )}
+              <div>
+                <div style={{ fontSize: '0.85rem', color: 'var(--text-light)', fontWeight: 500 }}>Pending</div>
+                <div style={{ fontSize: '1.5rem', fontWeight: 700 }}>{applications.filter(a => a.status === 'Pending').length}</div>
+              </div>
+            </div>
+            <div className="card" style={{ flex: 1, minWidth: '200px', padding: '1.25rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <div style={{ padding: '0.75rem', borderRadius: '50%', backgroundColor: '#ecfdf5', color: 'var(--success-color)' }}>
+                <CheckCircle size={24} />
+              </div>
+              <div>
+                <div style={{ fontSize: '0.85rem', color: 'var(--text-light)', fontWeight: 500 }}>Approved</div>
+                <div style={{ fontSize: '1.5rem', fontWeight: 700 }}>{applications.filter(a => a.status === 'Approved').length}</div>
+              </div>
+            </div>
+            <div className="card" style={{ flex: 1, minWidth: '200px', padding: '1.25rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <div style={{ padding: '0.75rem', borderRadius: '50%', backgroundColor: '#fff1f2', color: 'var(--danger-color)' }}>
+                <XCircle size={24} />
+              </div>
+              <div>
+                <div style={{ fontSize: '0.85rem', color: 'var(--text-light)', fontWeight: 500 }}>Total</div>
+                <div style={{ fontSize: '1.5rem', fontWeight: 700 }}>{applications.length}</div>
+              </div>
+            </div>
           </div>
 
-          {/* Available Services */}
-          <div style={{ maxWidth: '1000px' }}>
-            <h3 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: 'var(--text-dark)' }}>
-              <span>Available Certificates: {activeCategory}</span>
-              <span style={{ fontSize: '0.9rem', color: 'var(--text-light)', fontWeight: 'normal', backgroundColor: 'var(--bg-color)', padding: '0.25rem 0.75rem', borderRadius: '1rem', border: '1px solid var(--border-color)' }}>
-                Showing {filteredServices.length} {filteredServices.length === 1 ? 'service' : 'services'}
-              </span>
+          {/* Recent Applications Section */}
+          <section style={{ marginBottom: '4rem' }}>
+            <h3 style={{ marginBottom: '1.5rem', fontSize: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <FileText size={20} color="var(--primary-color)" /> My Recent Applications
             </h3>
-            <ServiceList services={filteredServices} />
-          </div>
+            <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+              {applications.length === 0 ? (
+                 <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-light)' }}>You have no applications yet.</div>
+              ) : (
+                <div style={{ overflowX: 'auto' }}>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Service Name</th>
+                        <th>Submission Date</th>
+                        <th>Status</th>
+                        <th>Documents</th>
+                        <th>Remarks</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {applications.map(app => (
+                        <tr key={app.id}>
+                          <td style={{ fontWeight: 600, color: 'var(--text-dark)' }}>{app.service_name}</td>
+                          <td>{new Date(app.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}</td>
+                          <td>{getStatusBadge(app.status)}</td>
+                          <td><span style={{ fontSize: '0.85rem', color: 'var(--text-light)' }}>{app.documents_count} Files</span></td>
+                          <td style={{ maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontSize: '0.85rem', color: 'var(--text-light)' }}>
+                            {app.remarks || 'No remarks yet'}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          </section>
 
-        </div>
+          {/* Available Services Section */}
+          <section>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
+              <h3 style={{ fontSize: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Activity size={20} color="var(--primary-color)" /> {activeCategory}
+              </h3>
+              <div style={{ fontSize: '0.85rem', color: 'var(--text-light)', backgroundColor: 'white', padding: '0.4rem 1rem', borderRadius: '2rem', border: '1px solid var(--border-color)', fontWeight: 500 }}>
+                {filteredServices.length} {filteredServices.length === 1 ? 'Service' : 'Services'} Available
+              </div>
+            </div>
+            
+            <ServiceList services={filteredServices} />
+          </section>
+
+        </main>
       </div>
     </div>
   );

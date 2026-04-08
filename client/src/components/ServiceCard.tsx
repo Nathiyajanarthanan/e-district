@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { PlusCircle } from 'lucide-react';
+import { ArrowRight, FileText, CreditCard } from 'lucide-react';
 
 interface Service {
   id: number;
@@ -17,23 +17,34 @@ interface ServiceCardProps {
 
 const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
   return (
-    <div className="card" style={{ display: 'flex', flexDirection: 'column', height: '100%', padding: '1.25rem' }}>
-      <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <h4 style={{ color: 'var(--primary-color)', margin: 0, fontSize: '1.1rem' }}>{service.name}</h4>
-        <span style={{ fontSize: '0.75rem', backgroundColor: 'var(--bg-color)', padding: '0.2rem 0.6rem', borderRadius: '1rem', color: 'var(--text-light)', border: '1px solid var(--border-color)', whiteSpace: 'nowrap', marginLeft: '0.5rem' }}>
-          {service.category}
-        </span>
+    <div className="service-card">
+      <div className="service-card-category">{service.category}</div>
+      <h4 className="service-card-title">{service.name}</h4>
+      <p className="service-card-desc">{service.description}</p>
+      
+      <div style={{ marginBottom: '1.5rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem', color: 'var(--text-dark)', fontWeight: 600, fontSize: '0.85rem' }}>
+          <FileText size={16} /> Required Documents
+        </div>
+        <div style={{ paddingLeft: '1.5rem', fontSize: '0.85rem', color: 'var(--text-light)' }}>
+          {service.required_documents.split(',').map((doc, idx) => (
+            <div key={idx} style={{ marginBottom: '2px' }}>• {doc.trim()}</div>
+          ))}
+        </div>
       </div>
-      <p style={{ color: 'var(--text-light)', fontSize: '0.9rem', marginBottom: '1rem', flex: 1, lineHeight: '1.5' }}>
-        {service.description}
-      </p>
-      <div style={{ fontSize: '0.85rem', marginBottom: '1.5rem', background: '#f8fafc', padding: '0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
-        <strong style={{ color: 'var(--text-dark)' }}>Required Documents:</strong><br/>
-        <span style={{ color: 'var(--text-light)', display: 'block', marginTop: '4px' }}>{service.required_documents || 'None'}</span>
+
+      <div className="service-card-footer">
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <span style={{ fontSize: '0.7rem', color: 'var(--text-light)', textTransform: 'uppercase', fontWeight: 600 }}>Service Fee</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+            <CreditCard size={14} color="var(--success-color)" />
+            <span className="service-fee">₹{service.fee.toFixed(2)}</span>
+          </div>
+        </div>
+        <Link to={`/apply/${service.id}`} className="btn btn-primary" style={{ padding: '0.6rem 1.2rem', fontSize: '0.85rem', whiteSpace: 'nowrap' }}>
+          Apply Now <ArrowRight size={16} />
+        </Link>
       </div>
-      <Link to={`/apply/${service.id}`} className="btn btn-primary" style={{ width: '100%', marginTop: 'auto', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', padding: '0.6rem' }}>
-        <PlusCircle size={18} /> Apply Now
-      </Link>
     </div>
   );
 };
