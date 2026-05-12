@@ -9,10 +9,10 @@ from routes.auth import auth_bp
 from routes.services import services_bp
 from routes.applications import applications_bp
 from routes.admin import admin_bp
+from urllib.parse import urlparse, urlunparse
 
 def create_app():
     app = Flask(__name__)
-    CORS(app)
 
     # Configuration
     base_dir = os.path.abspath(os.path.dirname(__file__))
@@ -35,7 +35,6 @@ def create_app():
     
     # Handle Render internal hostnames (e.g., "e-district-client" -> "e-district-client.onrender.com")
     if frontend_url != "*" and "localhost" not in frontend_url:
-        from urllib.parse import urlparse, urlunparse
         parsed = urlparse(frontend_url)
         if parsed.hostname and "." not in parsed.hostname:
             new_netloc = f"{parsed.hostname}.onrender.com"
@@ -44,7 +43,11 @@ def create_app():
             parsed = parsed._replace(netloc=new_netloc)
             frontend_url = urlunparse(parsed).rstrip('/')
 
-    CORS(app, resources={r"/api/*": {"origins": frontend_url}})
+    CORS(app, resources={r"/api/*": {
+        "origins": [frontend_url, "http://localhost:3000", "http://localhost:5173"],
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"]
+    }})
 
     # Ensure upload folder exists
     os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
