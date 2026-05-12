@@ -33,6 +33,17 @@ def create_app():
     if frontend_url != "*" and not frontend_url.startswith("http"):
         frontend_url = f"https://{frontend_url}"
     
+    # Handle Render internal hostnames (e.g., "e-district-client" -> "e-district-client.onrender.com")
+    if frontend_url != "*" and "localhost" not in frontend_url:
+        from urllib.parse import urlparse, urlunparse
+        parsed = urlparse(frontend_url)
+        if parsed.hostname and "." not in parsed.hostname:
+            new_netloc = f"{parsed.hostname}.onrender.com"
+            if parsed.port:
+                new_netloc = f"{new_netloc}:{parsed.port}"
+            parsed = parsed._replace(netloc=new_netloc)
+            frontend_url = urlunparse(parsed).rstrip('/')
+
     CORS(app, resources={r"/api/*": {"origins": frontend_url}})
 
     # Ensure upload folder exists
