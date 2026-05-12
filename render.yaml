@@ -17,24 +17,25 @@ services:
         generateValue: true
       - key: FRONTEND_URL
         fromService:
-          type: static
           name: e-district-client
+          type: web # Changed to web for property mapping
           property: url
 
   # 2. Frontend Static Site (Vite)
-  - type: static
+  # Changed type to web with env: static as some Blueprint parsers prefer this
+  - type: web
     name: e-district-client
-    env: node
+    env: static
     region: singapore
     plan: free
     rootDir: client
     buildCommand: npm install && npm run build
-    staticPublishPath: dist
+    publishPath: dist
     envVars:
       - key: VITE_API_URL
         fromService:
-          type: web
           name: e-district-server
+          type: web
           property: url
         suffix: /api
 
