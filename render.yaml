@@ -16,12 +16,9 @@ services:
           name: e-district-db
           property: connectionString
       - key: SECRET_KEY
-        generateValue: true
+        value: super-secret-key-for-production-123
       - key: FRONTEND_URL
-        fromService:
-          name: e-district-client
-          type: web
-          property: host
+        value: https://e-district-client.onrender.com
 
   # 2. Frontend Web Service (Node.js)
   - type: web
@@ -34,11 +31,7 @@ services:
     startCommand: npm start
     envVars:
       - key: VITE_API_URL
-        fromService:
-          name: e-district-server
-          type: web
-          property: host
-        suffix: /api
+        value: https://e-district-server.onrender.com/api
 
 # 3. PostgreSQL Database
 databases:

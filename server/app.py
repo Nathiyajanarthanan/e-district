@@ -28,26 +28,13 @@ def create_app():
     app.config["UPLOAD_FOLDER"] = os.path.join(base_dir, "uploads")
     app.config["MAX_CONTENT_LENGTH"] = 50 * 1024 * 1024 # 50MB max upload size
 
-    # CORS Configuration
-    frontend_url = os.environ.get("FRONTEND_URL", "*")
-    if frontend_url != "*" and not frontend_url.startswith("http"):
-        frontend_url = f"https://{frontend_url}"
-    
-    # Handle Render internal hostnames (e.g., "e-district-client" -> "e-district-client.onrender.com")
-    if frontend_url != "*" and "localhost" not in frontend_url:
-        parsed = urlparse(frontend_url)
-        if parsed.hostname and "." not in parsed.hostname:
-            new_netloc = f"{parsed.hostname}.onrender.com"
-            if parsed.port:
-                new_netloc = f"{new_netloc}:{parsed.port}"
-            parsed = parsed._replace(netloc=new_netloc)
-            frontend_url = urlunparse(parsed).rstrip('/')
-
+    # CORS Configuration - Simplified and permissive for production
     CORS(app, resources={r"/api/*": {
-        "origins": [frontend_url, "http://localhost:3000", "http://localhost:5173"],
+        "origins": ["*", "https://e-district-client.onrender.com", "http://localhost:3000"],
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         "allow_headers": ["Content-Type", "Authorization"]
     }})
+    print(f"[DEBUG] CORS enabled for all origins (*)")
 
     # Ensure upload folder exists
     os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
@@ -72,6 +59,7 @@ def seed_db():
     
     # 1. Create Admin
     admin_email = "admin@edistrict.gov"
+    print(f"[DB CHECK] Checking for admin: {admin_email}")
     if not User.query.filter_by(email=admin_email).first():
         admin = User(
             full_name="System Administrator",
