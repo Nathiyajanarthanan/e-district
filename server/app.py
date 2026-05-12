@@ -30,6 +30,9 @@ def create_app():
 
     # CORS Configuration
     frontend_url = os.environ.get("FRONTEND_URL", "*")
+    if frontend_url != "*" and not frontend_url.startswith("http"):
+        frontend_url = f"https://{frontend_url}"
+    
     CORS(app, resources={r"/api/*": {"origins": frontend_url}})
 
     # Ensure upload folder exists

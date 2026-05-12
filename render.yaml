@@ -18,11 +18,10 @@ services:
       - key: FRONTEND_URL
         fromService:
           name: e-district-client
-          property: url
+          type: web
+          property: host
 
   # 2. Frontend Web Service (Node.js)
-  # Using type: web instead of static to bypass the "unknown type static" error.
-  # This serves the static files using the 'serve' package.
   - type: web
     name: e-district-client
     env: node
@@ -35,7 +34,8 @@ services:
       - key: VITE_API_URL
         fromService:
           name: e-district-server
-          property: url
+          type: web
+          property: host
         suffix: /api
 
 # 3. PostgreSQL Database
